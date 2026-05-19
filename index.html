@@ -1,773 +1,754 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zıt Anlamlı Kelimeler - Kim 500 Puan İster?</title>
-    <!-- Tailwind CSS ve Fontlar -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
-    <!-- FontAwesome İkonları -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Konfeti Efekti -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kim 500 Puan İster? - Zıt Anlamlı Kelimeler</title>
+  
+  <!-- ================= PWA GEREKSİNİMLERİ & META TAGLARI ================= -->
+  <meta name="theme-color" content="#8b5cf6">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Zıt Anlam">
+  
+  <!-- Sevimli Özel Logomuz (SVG formatında Apple Touch Icon) -->
+  <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' width='512' height='512'><defs><linearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'><stop offset='0%25' style='stop-color:%23a78bfa;stop-opacity:1' /><stop offset='100%25' style='stop-color:%238b5cf6;stop-opacity:1' /></linearGradient></defs><rect width='512' height='512' rx='128' fill='url(%23grad)'/><circle cx='100' cy='100' r='40' fill='%23c084fc' opacity='0.3'/><circle cx='420' cy='400' r='60' fill='%23f472b6' opacity='0.3'/><text x='140' y='240' font-family='sans-serif' font-size='120' fill='%23ffffff' font-weight='bold' text-anchor='middle'>A</text><text x='372' y='240' font-family='sans-serif' font-size='120' fill='%23fef08a' font-weight='bold' text-anchor='middle'>Z</text><path d='M 210 200 L 300 200 M 230 180 L 210 200 L 230 220 M 280 180 L 300 200 L 280 220' stroke='%23f3f4f6' stroke-width='12' stroke-linecap='round' stroke-linejoin='round' fill='none'/><circle cx='256' cy='320' r='80' fill='none' stroke='%23fdba74' stroke-width='24'/><line x1='312' x2='400' y1='376' y2='464' stroke='%23fdba74' stroke-width='24' stroke-linecap='round'/><circle cx='230' cy='290' r='15' fill='%23ffffff' opacity='0.6'/></svg>">
 
-    <style>
-        body {
-            font-family: 'Fredoka', sans-serif;
-            background: radial-gradient(circle, #2d154c 0%, #0e051d 100%);
-        }
-        .millionaire-box {
-            background: linear-gradient(135deg, #1f0f3d 0%, #11052c 100%);
-            border: 4px solid #f59e0b;
-            box-shadow: 0 0 25px rgba(245, 158, 11, 0.3);
-        }
-        .option-btn {
-            background: linear-gradient(90deg, #1b1437 0%, #251b4f 100%);
-            border: 2px solid #3b82f6;
-            transition: all 0.2s ease-in-out;
-            clip-path: polygon(5% 0%, 95% 0%, 100% 50%, 95% 100%, 5% 100%, 0% 50%);
-        }
-        .option-btn:hover:not(:disabled) {
-            background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
-            border-color: #ffffff;
-            color: #ffffff;
-            transform: scale(1.02);
-        }
-        .option-btn.selected {
-            background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%) !important;
-            border-color: #ffffff !important;
-        }
-        .option-btn.correct {
-            background: linear-gradient(90deg, #10b981 0%, #059669 100%) !important;
-            border-color: #ffffff !important;
-        }
-        .option-btn.wrong {
-            background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%) !important;
-            border-color: #ffffff !important;
-        }
-        .ladder-item {
-            clip-path: polygon(5% 0%, 95% 0%, 100% 50%, 95% 100%, 5% 100%, 0% 50%);
-        }
-        .bubble {
-            animation: floatBubble 4s ease-in-out infinite alternate;
-        }
-        @keyframes floatBubble {
-            0% { transform: translateY(0px); }
-            100% { transform: translateY(-10px); }
-        }
-    </style>
+  <!-- Dahili JSON Manifest Dosyası (GitHub üzerinde harici manifest dosyası aramadan PWA kurulumu sağlar) -->
+  <link rel="manifest" href='data:application/json,{"name":"Zıt Anlam Dedektifi","short_name":"Zıt Anlam","description":"İlkokul 2. Sınıf Eğitici Zıt Anlam Bilgi Yarışması","start_url":".","display":"standalone","background_color":"#e0e7ff","theme_color":"#8b5cf6","orientation":"portrait","icons":[{"src":"data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\" width=\"512\" height=\"512\"><defs><linearGradient id=\"grad\" x1=\"0%25\" y1=\"0%25\" x2=\"100%25\" y2=\"100%25\"><stop offset=\"0%25\" style=\"stop-color:%23a78bfa;stop-opacity:1\" /><stop offset=\"100%25\" style=\"stop-color:%238b5cf6;stop-opacity:1\" /></linearGradient></defs><rect width=\"512\" height=\"512\" rx=\"128\" fill=\"url(%23grad)\"/><circle cx=\"100\" cy=\"100\" r=\"40\" fill=\"%23c084fc\" opacity=\"0.3\"/><circle cx=\"420\" cy=\"400\" r=\"60\" fill=\"%23f472b6\" opacity=\"0.3\"/><text x=\"140\" y=\"240\" font-family=\"sans-serif\" font-size=\"120\" fill=\"%23ffffff\" font-weight=\"bold\" text-anchor=\"middle\">A</text><text x=\"372\" y=\"240\" font-family=\"sans-serif\" font-size=\"120\" fill=\"%23fef08a\" font-weight=\"bold\" text-anchor=\"middle\">Z</text><path d=\"M 210 200 L 300 200 M 230 180 L 210 200 L 230 220 M 280 180 L 300 200 L 280 220\" stroke=\"%23f3f4f6\" stroke-width=\"12\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><circle cx=\"256\" cy=\"320\" r=\"80\" fill=\"none\" stroke=\"%23fdba74\" stroke-width=\"24\"/><line x1=\"312\" x2=\"400\" y1=\"376\" y2=\"464\" stroke=\"%23fdba74\" stroke-width=\"24\" stroke-linecap=\"round\"/><circle cx=\"230\" cy=\"290\" r=\"15\" fill=\"%23ffffff\" opacity=\"0.6\"/></svg>","sizes":"512x512","type":"image/svg+xml"}]}'>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts - Çocuk dostu sevimli yazı tipleri -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Canvas Confetti (Kazanınca patlayacak konfetiler için) -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Quicksand', sans-serif;
+    }
+    .title-font {
+      font-family: 'Fredoka One', cursive;
+    }
+    /* Özel buton ve kutu gölgeleri */
+    .bubble-shadow {
+      box-shadow: 0 8px 0px 0px rgba(0, 0, 0, 0.15);
+    }
+    .bubble-button {
+      transition: all 0.1s ease;
+    }
+    .bubble-button:active {
+      transform: translateY(4px);
+      box-shadow: 0 4px 0px 0px rgba(0, 0, 0, 0.15);
+    }
+  </style>
 </head>
-<body class="min-h-screen text-white flex flex-col justify-between overflow-x-hidden p-3 sm:p-6">
+<body class="bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 min-h-screen flex flex-col justify-between text-slate-800 selection:bg-purple-200">
 
-    <script>
-        // Web Audio API ile tatlı oyun sesleri oluşturma
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  <!-- Üst Bar (Skor, Can ve Logo) -->
+  <header class="bg-white/80 backdrop-blur-md border-b-4 border-purple-200 sticky top-0 z-40 px-4 py-3 shadow-sm">
+    <div class="max-w-5xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="bg-amber-400 p-2.5 rounded-2xl shadow-inner text-white flex items-center justify-center">
+          <i class="fa-solid fa-graduation-cap text-2xl animate-bounce"></i>
+        </div>
+        <div>
+          <h1 class="title-font text-purple-600 text-lg md:text-xl tracking-wide">Zıt Anlam Dedektifi</h1>
+          <p class="text-xs text-slate-500 font-bold">İlkokul 2. Sınıf Eğitici Bilgi Yarışması</p>
+        </div>
+      </div>
+      
+      <!-- Seviye Göstergesi -->
+      <div class="flex items-center gap-2 bg-purple-100 px-4 py-2 rounded-2xl border-2 border-purple-300">
+        <span class="text-xs font-bold text-purple-700 uppercase">Ödül:</span>
+        <span id="current-prize-badge" class="font-bold text-amber-600 title-font text-base md:text-lg">0 Puan</span>
+      </div>
+    </div>
+  </header>
 
-        function playSound(type) {
-            try {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-
-                if (type === 'click') {
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(400, audioCtx.currentTime);
-                    osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.1);
-                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-                    osc.start();
-                    osc.stop(audioCtx.currentTime + 0.1);
-                } else if (type === 'correct') {
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
-                    osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
-                    osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2); // G5
-                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
-                    osc.start();
-                    osc.stop(audioCtx.currentTime + 0.4);
-                } else if (type === 'wrong') {
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(220, audioCtx.currentTime);
-                    osc.frequency.linearRampToValueAtTime(110, audioCtx.currentTime + 0.3);
-                    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
-                    osc.start();
-                    osc.stop(audioCtx.currentTime + 0.3);
-                } else if (type === 'joker') {
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(300, audioCtx.currentTime);
-                    osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.5);
-                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
-                    osc.start();
-                    osc.stop(audioCtx.currentTime + 0.5);
-                }
-            } catch (e) {
-                console.log("Audio not allowed yet or not supported.");
-            }
-        }
-    </script>
-
-    <header class="w-full max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-4 py-2 border-b border-purple-900 mb-4">
-        <div class="flex items-center gap-3">
-            <div class="bg-amber-500 text-purple-950 font-bold p-3 rounded-2xl shadow-lg flex items-center justify-center text-2xl animate-bounce">
-                🚀
-            </div>
+  <!-- Ana Oyun Alanı -->
+  <main class="max-w-5xl w-full mx-auto px-4 py-6 flex-grow flex flex-col md:flex-row gap-6 items-stretch justify-center">
+    
+    <!-- Sol Kısım: Soru Kartı, Cevaplar ve Jokeler -->
+    <div class="flex-grow flex flex-col justify-between gap-6 md:w-2/3">
+      
+      <!-- BAŞLANGIÇ EKRANI -->
+      <div id="start-screen" class="bg-white border-4 border-purple-300 rounded-3xl p-6 md:p-8 text-center bubble-shadow flex-grow flex flex-col items-center justify-center gap-6">
+        
+        <!-- PWA TELEFONA YÜKLEME BANNERI (Sadece yüklenebilir Android/Chrome cihazlarda görünür) -->
+        <div id="pwa-install-banner" class="hidden w-full bg-gradient-to-r from-purple-500 to-indigo-600 rounded-2xl p-4 text-white flex-col md:flex-row items-center justify-between gap-3 shadow-md animate-bounce">
+          <div class="flex items-center gap-3 text-left">
+            <span class="text-3xl">📱</span>
             <div>
-                <h1 class="text-xl sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-yellow-300">
-                    KİM 500 PUAN İSTER?
-                </h1>
-                <p class="text-xs text-amber-200/80">İlkokul 2. Sınıf Zıt Anlamlı Kelimeler Eğlencesi</p>
+              <h4 class="font-bold text-sm md:text-base">Uygulamayı Telefonuna Yükle!</h4>
+              <p class="text-xs text-purple-100">İnternet olmadan da hızlıca oyna.</p>
             </div>
+          </div>
+          <button onclick="triggerPWAInstall()" class="bg-white text-purple-700 font-bold text-xs px-4 py-2 rounded-xl shadow hover:bg-purple-50 transition active:scale-95">
+            Hemen Yükle
+          </button>
         </div>
-        <div class="flex items-center gap-2 bg-purple-950/80 px-4 py-2 rounded-2xl border border-purple-500/30">
-            <i class="fa-solid fa-trophy text-yellow-400"></i>
-            <span class="text-sm font-semibold text-gray-200">En Yüksek Skorumuz: <span id="high-score" class="text-amber-400 font-bold">0</span> Puan</span>
-        </div>
-    </header>
 
-    <main class="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6 items-start flex-grow">
+        <div class="text-6xl animate-pulse">🎯</div>
+        <h2 class="title-font text-3xl md:text-4xl text-purple-600">Büyük Yarışmaya Hoş Geldin!</h2>
+        <p class="text-slate-600 max-w-md mx-auto text-sm md:text-base">
+          Zıt anlamlı kelimeleri bul, 10 aşamayı tamamla ve tam <b>500 Puan</b> kazanarak şampiyon ol! 3 harika joker hakkın sana yardım edecek.
+        </p>
+        <button onclick="startGame()" class="bg-emerald-500 hover:bg-emerald-400 text-white title-font text-xl px-10 py-4 rounded-2xl border-b-8 border-emerald-700 bubble-button bubble-shadow w-full max-w-xs mt-2">
+          OYUNU BAŞLAT <i class="fa-solid fa-play ml-2"></i>
+        </button>
+      </div>
+
+      <!-- OYUN PANELİ (SORU VE ŞIKLAR) -->
+      <div id="game-panel" class="hidden flex-col justify-between flex-grow gap-6">
         
-        <!-- Sol Bölüm: Soru ve Şıklar (Genişlik: 3/4) -->
-        <section class="lg:col-span-3 flex flex-col justify-between h-full gap-6">
-            
-            <!-- Joker Hakları Kartı -->
-            <div class="bg-purple-950/60 p-4 rounded-3xl border border-purple-500/30 flex flex-wrap justify-around items-center gap-4">
-                <span class="text-amber-300 font-bold text-sm sm:text-base"><i class="fa-solid fa-wand-magic-sparkles mr-2"></i>JOKER HAKLARIN:</span>
-                <div class="flex gap-4">
-                    <!-- Yarı Yarıya Jokeri -->
-                    <button id="joker-half" onclick="useHalfJoker()" class="group relative flex flex-col items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-b from-blue-500 to-indigo-800 border-2 border-blue-400 shadow-lg hover:brightness-110 active:scale-95 transition-all">
-                        <i class="fa-solid fa-scissors text-xl sm:text-2xl"></i>
-                        <span class="text-[10px] mt-1 font-bold">%50</span>
-                        <div class="absolute -top-1 -right-1 bg-red-500 text-white w-5 h-5 rounded-full text-xs flex items-center justify-center font-bold hidden" id="used-half">✕</div>
-                    </button>
-                    <!-- Seyirci Jokeri -->
-                    <button id="joker-audience" onclick="useAudienceJoker()" class="group relative flex flex-col items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-b from-purple-500 to-indigo-800 border-2 border-purple-400 shadow-lg hover:brightness-110 active:scale-95 transition-all">
-                        <i class="fa-solid fa-users text-xl sm:text-2xl"></i>
-                        <span class="text-[10px] mt-1 font-bold">Seyirci</span>
-                        <div class="absolute -top-1 -right-1 bg-red-500 text-white w-5 h-5 rounded-full text-xs flex items-center justify-center font-bold hidden" id="used-audience">✕</div>
-                    </button>
-                    <!-- Telefon Jokeri -->
-                    <button id="joker-phone" onclick="usePhoneJoker()" class="group relative flex flex-col items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-b from-green-500 to-emerald-800 border-2 border-green-400 shadow-lg hover:brightness-110 active:scale-95 transition-all">
-                        <i class="fa-solid fa-phone text-xl sm:text-2xl"></i>
-                        <span class="text-[10px] mt-1 font-bold">Telefon</span>
-                        <div class="absolute -top-1 -right-1 bg-red-500 text-white w-5 h-5 rounded-full text-xs flex items-center justify-center font-bold hidden" id="used-phone">✕</div>
-                    </button>
-                </div>
-            </div>
+        <!-- Soru Kartı -->
+        <div class="bg-white border-4 border-purple-300 rounded-3xl p-6 md:p-8 bubble-shadow relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-24 h-24 bg-purple-50 rounded-full -mr-10 -mt-10 pointer-events-none"></div>
+          
+          <div class="flex justify-between items-center mb-4">
+            <span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-bold" id="question-index-label">Soru: 1/10</span>
+            <span class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-xs font-bold" id="question-difficulty-label">Zorluk: Kolay</span>
+          </div>
 
-            <!-- Yarışma Kutusu (Millionaire Box) -->
-            <div class="millionaire-box rounded-3xl p-6 sm:p-10 flex flex-col justify-between gap-8 relative overflow-hidden flex-grow min-h-[350px]">
-                
-                <!-- Süsleme Işıkları -->
-                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent opacity-70"></div>
-                
-                <!-- Soru Başlığı -->
-                <div class="flex items-center justify-between text-amber-300 font-bold border-b border-amber-500/20 pb-4">
-                    <span id="question-level-title" class="text-lg"><i class="fa-solid fa-star mr-2 text-yellow-400"></i>Soru: 1 / 10</span>
-                    <span id="question-points" class="bg-amber-500/20 text-amber-300 px-3 py-1 rounded-full text-sm border border-amber-500/30">Ödül: 50 Puan</span>
-                </div>
-
-                <!-- Soru Cümlesi -->
-                <div class="text-center my-4 flex-grow flex items-center justify-center">
-                    <h2 id="question-text" class="text-xl sm:text-3xl font-extrabold leading-relaxed text-yellow-100 tracking-wide bubble">
-                        Yükleniyor...
-                    </h2>
-                </div>
-
-                <!-- Seçenekler A-B-C-D Grid -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-auto">
-                    <button id="opt-A" onclick="checkAnswer('A')" class="option-btn text-left p-4 sm:p-5 text-base sm:text-lg font-bold text-gray-200 flex items-center gap-3">
-                        <span class="text-amber-400 font-black mr-2">A:</span> <span id="text-A" class="flex-grow">...</span>
-                    </button>
-                    <button id="opt-B" onclick="checkAnswer('B')" class="option-btn text-left p-4 sm:p-5 text-base sm:text-lg font-bold text-gray-200 flex items-center gap-3">
-                        <span class="text-amber-400 font-black mr-2">B:</span> <span id="text-B" class="flex-grow">...</span>
-                    </button>
-                    <button id="opt-C" onclick="checkAnswer('C')" class="option-btn text-left p-4 sm:p-5 text-base sm:text-lg font-bold text-gray-200 flex items-center gap-3">
-                        <span class="text-amber-400 font-black mr-2">C:</span> <span id="text-C" class="flex-grow">...</span>
-                    </button>
-                    <button id="opt-D" onclick="checkAnswer('D')" class="option-btn text-left p-4 sm:p-5 text-base sm:text-lg font-bold text-gray-200 flex items-center gap-3">
-                        <span class="text-amber-400 font-black mr-2">D:</span> <span id="text-D" class="flex-grow">...</span>
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <aside class="lg:col-span-1 bg-purple-950/40 p-4 rounded-3xl border border-purple-500/20 flex flex-col gap-3 h-full justify-between">
-            <div class="text-center border-b border-purple-500/20 pb-3">
-                <span class="text-amber-400 font-bold text-sm"><i class="fa-solid fa-list-ol mr-2"></i>PUAN MERDİVENİ</span>
-            </div>
-            
-            <!-- Derece Basamakları -->
-            <div class="flex flex-col gap-2 flex-grow justify-center" id="money-ladder-container">
-                <!-- Javascript ile doldurulacaktır. En yüksek seviye en üstte. -->
-            </div>
-
-            <!-- Çocuklar için Sevimli Motivasyon Kartı -->
-            <div class="bg-gradient-to-r from-indigo-900 to-purple-950 p-3 rounded-2xl border border-purple-500/30 text-center mt-3">
-                <div class="text-2xl mb-1">💡</div>
-                <p class="text-xs text-indigo-200">Yanlış yaptığında asla üzülme! Sana kelimelerin doğrusunu ve çok eğlenceli örnek cümleleri öğreteceğiz!</p>
-            </div>
-        </aside>
-    </main>
-
-
-    <!-- Seyirci Jokeri Grafik Modalı -->
-    <div id="modal-audience" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 hidden">
-        <div class="bg-slate-900 border-4 border-purple-500 p-6 rounded-3xl max-w-sm w-full text-center">
-            <h3 class="text-xl font-bold text-amber-300 mb-4"><i class="fa-solid fa-users mr-2"></i>Seyirciler Oyladı!</h3>
-            <p class="text-sm text-gray-300 mb-6">Sınıf arkadaşlarımızın verdiği cevapların dağılımı aşağıdaki gibidir:</p>
-            <div class="flex justify-around items-end h-32 gap-3 mb-6 bg-slate-950 p-4 rounded-2xl">
-                <div class="flex flex-col items-center w-full">
-                    <span id="vote-val-A" class="text-xs text-amber-400 font-bold">0%</span>
-                    <div id="vote-bar-A" class="w-full bg-gradient-to-t from-blue-600 to-blue-400 rounded-t-lg transition-all duration-1000" style="height: 0%"></div>
-                    <span class="text-sm font-bold mt-1 text-white">A</span>
-                </div>
-                <div class="flex flex-col items-center w-full">
-                    <span id="vote-val-B" class="text-xs text-amber-400 font-bold">0%</span>
-                    <div id="vote-bar-B" class="w-full bg-gradient-to-t from-blue-600 to-blue-400 rounded-t-lg transition-all duration-1000" style="height: 0%"></div>
-                    <span class="text-sm font-bold mt-1 text-white">B</span>
-                </div>
-                <div class="flex flex-col items-center w-full">
-                    <span id="vote-val-C" class="text-xs text-amber-400 font-bold">0%</span>
-                    <div id="vote-bar-C" class="w-full bg-gradient-to-t from-blue-600 to-blue-400 rounded-t-lg transition-all duration-1000" style="height: 0%"></div>
-                    <span class="text-sm font-bold mt-1 text-white">C</span>
-                </div>
-                <div class="flex flex-col items-center w-full">
-                    <span id="vote-val-D" class="text-xs text-amber-400 font-bold">0%</span>
-                    <div id="vote-bar-D" class="w-full bg-gradient-to-t from-blue-600 to-blue-400 rounded-t-lg transition-all duration-1000" style="height: 0%"></div>
-                    <span class="text-sm font-bold mt-1 text-white">D</span>
-                </div>
-            </div>
-            <button onclick="closeModal('modal-audience')" class="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-400 text-purple-950 font-extrabold rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-lg">
-                Yarışmaya Dön 🚀
-            </button>
+          <h3 class="text-center text-slate-500 text-sm md:text-base font-bold mb-2 uppercase tracking-wider">Aşağıdaki kelimenin zıt anlamlısı hangisidir?</h3>
+          <h2 class="text-center text-purple-600 text-4xl md:text-5xl title-font my-4 tracking-wide" id="question-word">Sıcak</h2>
         </div>
+
+        <!-- Şıklar (Grid 2x2) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="answers-container">
+          <!-- Şıklar dinamik olarak eklenecek -->
+        </div>
+
+        <!-- Jokeler Paneli -->
+        <div class="bg-white/80 backdrop-blur-sm border-2 border-purple-200 rounded-2xl p-4 flex flex-col gap-3">
+          <span class="text-xs font-bold text-slate-500 uppercase tracking-wider text-center block">Sıkıştığında Jokelerini Kullan!</span>
+          <div class="grid grid-cols-3 gap-3">
+            <!-- Yarı Yarıya -->
+            <button id="joker-half" onclick="useHalfJoker()" class="bg-blue-100 hover:bg-blue-200 text-blue-800 font-bold py-3 px-2 rounded-xl border-2 border-blue-300 transition flex flex-col items-center justify-center gap-1">
+              <i class="fa-solid fa-scissors text-lg"></i>
+              <span class="text-xs">Yarı Yarıya (%50)</span>
+            </button>
+            <!-- Telefon Jokeri -->
+            <button id="joker-phone" onclick="usePhoneJoker()" class="bg-pink-100 hover:bg-pink-200 text-pink-800 font-bold py-3 px-2 rounded-xl border-2 border-pink-300 transition flex flex-col items-center justify-center gap-1">
+              <i class="fa-solid fa-phone text-lg"></i>
+              <span class="text-xs">Öğretmeni Ara</span>
+            </button>
+            <!-- Seyirci Jokeri -->
+            <button id="joker-audience" onclick="useAudienceJoker()" class="bg-amber-100 hover:bg-amber-200 text-amber-800 font-bold py-3 px-2 rounded-xl border-2 border-amber-300 transition flex flex-col items-center justify-center gap-1">
+              <i class="fa-solid fa-users text-lg"></i>
+              <span class="text-xs">Sınıfa Sor</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- KAZANMA BİTİŞ EKRANI -->
+      <div id="win-screen" class="hidden bg-white border-4 border-amber-300 rounded-3xl p-8 text-center bubble-shadow flex-grow flex flex-col items-center justify-center gap-6">
+        <div class="text-7xl animate-bounce">🏆</div>
+        <h2 class="title-font text-3xl md:text-4xl text-amber-500">Tebrikler Şampiyon!</h2>
+        <p class="text-slate-600 max-w-md mx-auto text-base md:text-lg">
+          Bütün zıt anlamlı kelimeleri doğru bilerek büyük ödül olan <b class="text-purple-600">500 Puanı</b> kazandın! Tam bir Türkçe ustasısın.
+        </p>
+        <button onclick="restartGame()" class="bg-purple-600 hover:bg-purple-500 text-white title-font text-lg px-8 py-3 rounded-2xl border-b-4 border-purple-800 bubble-button bubble-shadow">
+          Tekrar Oyna <i class="fa-solid fa-rotate-right ml-2"></i>
+        </button>
+      </div>
+
     </div>
 
-    <!-- Telefon Jokeri Modalı -->
-    <div id="modal-phone" class="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50 hidden">
-        <div class="bg-slate-900 border-4 border-green-500 p-6 rounded-3xl max-w-sm w-full text-center">
-            <div class="text-5xl mb-3 animate-bounce">☎️</div>
-            <h3 class="text-xl font-bold text-green-400 mb-2">Öğretmenimizi Aradık!</h3>
-            <p class="text-sm text-gray-300 mb-4">Sevgili Bilge Öğretmen'imiz telefonu açtı:</p>
-            <div class="bg-slate-950 p-4 rounded-2xl border border-green-500/20 mb-6 text-left">
-                <p id="phone-dialog" class="text-base font-semibold text-green-200 leading-relaxed">
-                    "Merhaba tatlım! Bence aradığın kelimenin zıt anlamlısı kesinlikle..."
-                </p>
-            </div>
-            <button onclick="closeModal('modal-phone')" class="w-full py-3 bg-gradient-to-r from-green-500 to-emerald-400 text-white font-extrabold rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-lg">
-                Harika, Teşekkür Ederim! 🎓
-            </button>
-        </div>
+    <!-- Sağ Kısım: Kim 500 Puan İster Para Ağacı / Aşama Ağacı -->
+    <div class="md:w-1/3 flex flex-col justify-between bg-slate-900 border-4 border-slate-700 rounded-3xl p-4 md:p-6 text-white shadow-xl min-h-[400px]">
+      <div class="text-center mb-4">
+        <h3 class="title-font text-amber-400 text-sm md:text-base tracking-wide uppercase"><i class="fa-solid fa-trophy mr-1"></i> Derece Basamakları</h3>
+        <div class="h-1 bg-slate-700 my-2 rounded-full"></div>
+      </div>
+
+      <!-- Basamaklar Listesi (Aşama 10'dan 1'e doğru) -->
+      <div class="flex flex-col-reverse gap-1.5 flex-grow justify-center" id="steps-container">
+        <!-- Basamaklar javascript ile yüklenecek -->
+      </div>
     </div>
 
-    <!-- Eğitici Yanlış Cevap Modalı (En Başa Dönerken Cümle Gösterimi) -->
-    <div id="modal-wrong" class="fixed inset-0 bg-black/90 flex items-center justify-center p-4 z-50 hidden">
-        <div class="bg-gradient-to-b from-red-950 to-slate-950 border-4 border-red-500 p-6 sm:p-8 rounded-3xl max-w-lg w-full text-center relative overflow-hidden">
-            <!-- Arka Plan Görsel Efekt -->
-            <div class="absolute -right-10 -bottom-10 text-9xl text-red-500/10"><i class="fa-solid fa-graduation-cap"></i></div>
-            
-            <div class="text-6xl mb-4">😢</div>
-            <h3 class="text-2xl sm:text-3xl font-black text-red-400 mb-2">Ah, Yanlış Cevap Verdik!</h3>
-            <p class="text-sm sm:text-base text-gray-300 mb-6">Ama hiç üzülme! Şimdi bu kelimenin zıt anlamlısını harika bir cümleyle öğrenelim:</p>
-            
-            <!-- Eğitim Alanı -->
-            <div class="bg-slate-900/90 p-5 rounded-2xl border-2 border-amber-500/50 text-left mb-6 shadow-xl">
-                <div class="flex items-center gap-2 mb-3 border-b border-gray-700 pb-2">
-                    <span class="bg-amber-500 text-purple-950 text-xs font-bold px-2 py-1 rounded">ÖĞRENİYORUZ</span>
-                    <span id="wrong-word-title" class="font-bold text-amber-300">...</span>
-                </div>
-                <div class="text-base sm:text-lg mb-4 text-white">
-                    👉 <strong id="wrong-word-asked" class="text-red-400">...</strong> kelimesinin zıt anlamlısı 
-                    <strong id="wrong-word-correct" class="text-emerald-400 text-xl underline">...</strong> kelimesidir.
-                </div>
-                <div class="bg-slate-950 p-4 rounded-xl border border-gray-800">
-                    <div class="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1"><i class="fa-solid fa-book-open mr-1"></i>Örnek Cümlemiz:</div>
-                    <p id="wrong-word-sentence" class="text-sm sm:text-base font-medium text-yellow-100 italic leading-relaxed">
-                        "..."
-                    </p>
-                </div>
-            </div>
+  </main>
 
-            <!-- Yeniden Başlama Butonu -->
-            <button onclick="restartGame()" class="w-full py-4 bg-gradient-to-r from-amber-500 to-yellow-400 text-purple-950 font-black text-lg sm:text-xl rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl flex items-center justify-center gap-2">
-                <i class="fa-solid fa-rotate-right animate-spin"></i> En Baştan Başla ve Tekrar Dene!
-            </button>
+  <!-- ÖĞRETİCİ VE HATA EKRANI (Yanlış yapıldığında açılan öğretici modül) -->
+  <div id="learning-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white border-8 border-rose-400 rounded-3xl p-6 md:p-8 max-w-md w-full text-center shadow-2xl transform scale-95 transition-all flex flex-col gap-5">
+      <div class="text-5xl animate-bounce">💡 Öğrenme Vakti!</div>
+      
+      <h3 class="title-font text-2xl text-rose-500">Eyvah, Yanlış Cevap!</h3>
+      <p class="text-slate-600 text-sm md:text-base">
+        Üzülme! Yanlış yapmak öğrenmenin en tatlı yoludur. Doğrusunu hemen öğrenelim:
+      </p>
+
+      <!-- Kelime Kartı -->
+      <div class="bg-rose-50 border-2 border-rose-200 rounded-2xl p-4 flex justify-around items-center">
+        <div>
+          <span class="text-xs font-bold text-slate-400 block uppercase">Soru</span>
+          <span class="title-font text-xl text-slate-700" id="modal-word-q">Sıcak</span>
         </div>
-    </div>
-
-    <!-- Tebrikler / Kazanma Modalı -->
-    <div id="modal-win" class="fixed inset-0 bg-black/90 flex items-center justify-center p-4 z-50 hidden">
-        <div class="bg-gradient-to-b from-indigo-950 to-slate-950 border-4 border-yellow-400 p-8 rounded-3xl max-w-md w-full text-center relative overflow-hidden">
-            <div class="text-7xl mb-4 animate-bounce">🏆</div>
-            <h3 class="text-3xl font-black text-yellow-400 mb-2">Tebrikler Şampiyon!</h3>
-            <p class="text-lg text-amber-200 font-semibold mb-6">Tam 500 Puan Kazanarak Milyoner Oldun!</p>
-            
-            <p class="text-sm text-gray-300 mb-6 leading-relaxed">
-                İlkokul 2. sınıf düzeyindeki tüm zıt anlamlı kelimeleri başarıyla tamamladın ve harika bir Türkçe ustası olduğunu kanıtladın! 🥳
-            </p>
-
-            <!-- Yeniden Başlama Butonu -->
-            <button onclick="restartGame()" class="w-full py-4 bg-gradient-to-r from-yellow-400 to-amber-500 text-purple-950 font-black text-xl rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl">
-                Yeni Yarışma Başlat 🚀
-            </button>
+        <div class="text-rose-400 font-bold text-2xl"><i class="fa-solid fa-arrows-left-right"></i></div>
+        <div>
+          <span class="text-xs font-bold text-rose-400 block uppercase">Zıt Anlamı</span>
+          <span class="title-font text-xl text-rose-600" id="modal-word-a">Soğuk</span>
         </div>
+      </div>
+
+      <!-- Örnek Cümle Gösterimi -->
+      <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-4 text-left">
+        <span class="text-xs font-bold text-amber-700 block mb-1"><i class="fa-solid fa-star"></i> Örnek Cümle:</span>
+        <p class="text-slate-700 text-sm italic" id="modal-sentence">
+          "Fırından yeni çıkan <b>sıcak</b> ekmeği yerken yanına <b>soğuk</b> süt içti."
+        </p>
+      </div>
+
+      <button onclick="closeLearningModal()" class="bg-rose-500 hover:bg-rose-400 text-white title-font text-lg py-3 rounded-2xl border-b-4 border-rose-700 bubble-button bubble-shadow">
+        Anladım, Tekrar Dene! <i class="fa-solid fa-arrow-right ml-1"></i>
+      </button>
     </div>
+  </div>
 
-    <footer class="w-full max-w-6xl mx-auto text-center py-4 text-xs text-gray-400 border-t border-purple-900/40 mt-6">
-        <p>© 2026 Zıt Anlamlı Kelimeler Bilgi Yarışması. Tüm Hakları Saklıdır.</p>
-        <p class="mt-1">Bu proje ilkokul öğrencileri için eğlenceli ve güvenli bir statik web sitesidir. GitHub üzerinden kolayca yayına alınabilir.</p>
-    </footer>
+  <!-- JOKER DIALOG PENCERELERİ (Öğretmen ve Seyirci) -->
+  <div id="joker-modal" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white border-4 border-purple-400 rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl flex flex-col gap-4">
+      <div id="joker-modal-icon" class="text-5xl">📞</div>
+      <h3 id="joker-modal-title" class="title-font text-xl text-purple-600">Öğretmen Tüyosu</h3>
+      <div id="joker-modal-content" class="text-slate-700 text-sm md:text-base leading-relaxed">
+        <!-- İçerik -->
+      </div>
+      <button onclick="closeJokerModal()" class="bg-purple-600 hover:bg-purple-500 text-white font-bold py-2.5 px-6 rounded-xl self-center text-sm">
+        Teşekkürler!
+      </button>
+    </div>
+  </div>
 
-    <script>
-        // 10 Seviye, Her Seviyede 5 Soru (Toplam 50 Kelime)
-        // Her seviye için rastgele 1 soru seçilecektir.
-        const pool = {
-            1: [
-                { word: "Siyah", correct: "Beyaz", options: ["Kırmızı", "Beyaz", "Mavi", "Koyu"], sentence: "Siyah köpeğin yanındaki beyaz kedi çok sevimliydi." },
-                { word: "Büyük", correct: "Küçük", options: ["Küçük", "Kocaman", "Uzun", "Ağır"], sentence: "Büyük elmayı abime verdim, küçük elmayı kendime aldım." },
-                { word: "Uzun", correct: "Kısa", options: ["Geniş", "Dar", "Kısa", "Yüksek"], sentence: "Uzun çocuk basketbol oynarken, kısa çocuk futbol oynuyordu." },
-                { word: "Gece", correct: "Gündüz", options: ["Sabah", "Akşam", "Gündüz", "Karanlık"], sentence: "Gece güzelce uyuruz, gündüz ise okula gidip oyunlar oynarız." },
-                { word: "Açık", correct: "Kapalı", options: ["Boş", "Kapalı", "Kilitli", "Geniş"], sentence: "Kapı açık kalmıştı, rüzgar esince hemen kapalı hale geldi." }
-            ],
-            2: [
-                { word: "Alt", correct: "Üst", options: ["Üst", "Ön", "İç", "Yan"], sentence: "Masanın altında topum var, üstünde ise defterim duruyor." },
-                { word: "Ön", correct: "Arka", options: ["Sağ", "Sol", "İç", "Arka"], sentence: "Arabanın ön koltuğunda annem, arka koltuğunda ben oturuyorum." },
-                { word: "İç", correct: "Dış", options: ["Alt", "Dış", "Üst", "Kenar"], sentence: "Evin içi sıcacıktı ama dışarısı buz gibi soğuktu." },
-                { word: "Sağ", correct: "Sol", options: ["Ön", "Arka", "Sol", "Aşağı"], sentence: "Yoldan geçerken önce sola, sonra sağa, yine sola bakmalıyız." },
-                { word: "Gitmek", correct: "Gelmek", options: ["Koşmak", "Gelmek", "Durmak", "Yürümek"], sentence: "Okula gitmek çok eğlenceli ama eve geri gelmek de çok güzel." }
-            ],
-            3: [
-                { word: "Sıcak", correct: "Soğuk", options: ["Ilık", "Soğuk", "Serin", "Buzlu"], sentence: "Yazın sıcak çay yerine soğuk limonata içmeyi çok severim." },
-                { word: "Islak", correct: "Kuru", options: ["Nemli", "Kuru", "Yağmurlu", "Sulu"], sentence: "Yağmurda ıslak kalan montumu kuruttum, şimdi tamamen kuru oldu." },
-                { word: "Tatlı", correct: "Acı", options: ["Acı", "Tuzlu", "Ekşi", "Lezzetli"], sentence: "Tatlı elmayı çok sevdim ama acı biber dilimi yaktı." },
-                { word: "Yeni", correct: "Eski", options: ["Eski", "Yırtık", "Yıpranmış", "Güzel"], sentence: "Yeni ayakkabılarımı giyince eski ayakkabılarımı kutusuna koydum." },
-                { word: "Temiz", correct: "Kirli", options: ["Paslı", "Tozlu", "Kirli", "Lekeli"], sentence: "Temiz ellerimizle yemek yemeliyiz, kirli ellerle mikrop kapabiliriz." }
-            ],
-            4: [
-                { word: "Tok", correct: "Aç", options: ["Yorgun", "Susuz", "Aç", "Zayıf"], sentence: "Karnım çok tok olduğu için aç olan kediciğe mamamı verdim." },
-                { word: "Hızlı", correct: "Yavaş", options: ["Yavaş", "Durgun", "Hımbıl", "Sakin"], sentence: "Hızlı tavşan koştu ama yavaş kaplumbrağa yarışı kazandı." },
-                { word: "Ağır", correct: "Hafif", options: ["Kolay", "Hafif", "Zayıf", "Boş"], sentence: "Ağır çantamı taşımakta zorlandım ama hafif olan poşeti kolayca taşıdım." },
-                { word: "Kolay", correct: "Zor", options: ["Zor", "Karışık", "Sıkıcı", "Uzun"], sentence: "Matematik sınavındaki kolay soruları hemen yaptım, zor olanları sona bıraktım." },
-                { word: "Genç", correct: "Yaşlı", options: ["Dede", "Yaşlı", "Olgun", "Büyük"], sentence: "Genç çocuk yaşlı amcanın karşıya geçmesine yardım etti." }
-            ],
-            5: [
-                { word: "Gülmek", correct: "Ağlamak", options: ["Ağlamak", "Üzülmek", "Susmak", "Bağırmak"], sentence: "Komik fıkraya gülmek çok güzel, canımız acıyınca ağlamak ise doğaldır." },
-                { word: "Doğru", correct: "Yanlış", options: ["Eğri", "Yanlış", "Yalan", "Hatalı"], sentence: "Doğru cevapları yeşille, yanlış cevapları kırmızıyla işaretledim." },
-                { word: "Güzel", correct: "Çirkin", options: ["Kötü", "Çirkin", "Eski", "Sade"], sentence: "Güzel ve temiz bir çevre varken, yerlere çöp atarak çirkin bir görüntü oluşturmamalıyız." },
-                { word: "Erken", correct: "Geç", options: ["Geç", "Hızlı", "Yavaş", "Zamanında"], sentence: "Akşam erken yatarsak, sabah geç kalmadan uyanabiliriz." },
-                { word: "Dolu", correct: "Boş", options: ["Yarım", "Boş", "Eksik", "Az"], sentence: "Dolu bardağı masaya bıraktım, boş bardağı ise mutfağa götürdüm." }
-            ],
-            6: [
-                { word: "Şişman", correct: "Zayıf", options: ["Zayıf", "İnce", "Küçük", "Kısa"], sentence: "Şişman kedi mamasını çok yemiş, zayıf kedi ise azıcık yemişti." },
-                { word: "Alçak", correct: "Yüksek", options: ["Yüksek", "Derin", "Uzak", "Yukarı"], sentence: "Alçak tepeden kaydık, sonra yüksek dağın tepesine baktık." },
-                { word: "Kalın", correct: "İnce", options: ["Kısa", "Zayıf", "Dar", "İnce"], sentence: "Kışın kalın montlar giyeriz, yazın ise ince tişörtler tercih ederiz." },
-                { word: "İlk", correct: "Son", options: ["Son", "İkinci", "Orta", "Bitiş"], sentence: "Sıranın ilk başındaki çocuk şarkı söyledi, son sıradaki çocuk ise alkışladı." },
-                { word: "Ucuz", correct: "Pahalı", options: ["Pahalı", "Zengin", "Değerli", "Para"], sentence: "Pazarda elmalar çok ucuzdu ama marketteki oyuncak çok pahalıydı." }
-            ],
-            7: [
-                { word: "Sık", correct: "Seyrek", options: ["Açık", "Bol", "Seyrek", "Uzak"], sentence: "Bahçedeki sık ağaçların arasından geçtik ama seyrek ağaçlı yolda koştuk." },
-                { word: "Sert", correct: "Yumuşak", options: ["Yumuşak", "Hafif", "Islak", "Kolay"], sentence: "Sert taşın üstüne oturduktan sonra yumuşak koltuk çok rahat geldi." },
-                { word: "Cesur", correct: "Korkak", options: ["Çekingen", "Sakin", "Korkak", "Zayıf"], sentence: "Cesur aslan kükredi ama korkak tavşan hemen yuvasına kaçtı." },
-                { word: "Tembel", correct: "Çalışkan", options: ["Zeki", "Çalışkan", "Hızlı", "Aktif"], sentence: "Tembel karınca kışın aç kaldı, çalışkan karınca ise yemeğini önceden hazırladı." },
-                { word: "Neşeli", correct: "Üzgün", options: ["Kızgın", "Üzgün", "Yorgun", "Korkmuş"], sentence: "Hediye alınca neşeli oldum, oyuncağım kırılınca ise üzgün hissettim." }
-            ],
-            8: [
-                { word: "Yakın", correct: "Uzak", options: ["Uzak", "Yabancı", "Ters", "Kenar"], sentence: "Evimiz okula çok yakın ama teyzemin evi oldukça uzak." },
-                { word: "Dost", correct: "Düşman", options: ["Yabancı", "Rakip", "Düşman", "Kötü"], sentence: "Kediler ve köpekler bazen dost, bazen de düşman gibi davranabilirler." },
-                { word: "Önce", correct: "Sonra", options: ["İlk", "Sonra", "Son", "Geçmiş"], sentence: "Önce ellerimizi yıkamalıyız, sonra yemeğimizi yemeliyiz." },
-                { word: "Yarar", correct: "Zarar", options: ["Zarar", "Kötülük", "Zorluk", "Hata"], sentence: "Meyve yemek sağlığa yarar sağlar, çok şeker yemek ise zarar verir." },
-                { word: "Cömert", correct: "Cimri", options: ["Cimri", "Kötü", "Fakir", "Zayıf"], sentence: "Cömert çocuk bisküvisini paylaştı, cimri çocuk ise kimseye vermedi." }
-            ],
-            9: [
-                { word: "Barış", correct: "Savaş", options: ["Kavga", "Savaş", "Düşmanlık", "Kargaşa"], sentence: "Tüm dünyada barış olmalı, savaşlar çocukları çok üzer." },
-                { word: "İnmek", correct: "Çıkmak", options: ["Çıkmak", "Binmek", "Uçmak", "Koşmak"], sentence: "Merdivenden yavaşça inmek ve güvenle yukarı çıkmak gerekir." },
-                { word: "Alıcı", correct: "Satıcı", options: ["Müşteri", "Satıcı", "Verici", "Zengin"], sentence: "Alıcı adam pazarlığı yaptı, satıcı adam da elmayı tarttı." },
-                { word: "Doğal", correct: "Yapay", options: ["Yapay", "Sahte", "Plastik", "Değişik"], sentence: "Doğal meyve suları çok sağlıklıdır ama yapay olan gazlı içecekler zararlıdır." },
-                { word: "Ödül", correct: "Ceza", options: ["Ceza", "Kayıp", "Yasak", "Zorluk"], sentence: "Yarışmada birinciye ödül verildi, kurallara uymayana ise oyun dışı kalma cezası verildi." }
-            ],
-            10: [
-                { word: "Taze", correct: "Bayat", options: ["Eski", "Çürük", "Bayat", "Kuru"], sentence: "Fırından çıkan taze ekmek sıcacıktı ama dünkü bayat ekmek sertleşmişti." },
-                { word: "Parlak", correct: "Mat", options: ["Karanlık", "Mat", "Sönük", "Renksiz"], sentence: "Yaldızlı defterim çok parlak duruyor ama diğer defterimin kapağı oldukça mat." },
-                { word: "Doğu", correct: "Batı", options: ["Batı", "Kuzey", "Güney", "Yön"], sentence: "Güneş sabah doğu yönünden doğar, akşam ise batı yönünden batar." },
-                { word: "Kuzey", correct: "Güney", options: ["Doğu", "Batı", "Güney", "Kutup"], sentence: "Kuzey kutbu çok soğuktur, güney bölgeleri ise genellikle daha sıcaktır." },
-                { word: "Hatırlamak", correct: "Unutmak", options: ["Unutmak", "Düşünmek", "Bulmak", "Bilmek"], sentence: "Öğretmenimin adını hatırlamak çok kolaydı ama çantamı okulda unutmak beni üzdü." }
-            ]
-        };
+  <!-- Footer -->
+  <footer class="bg-slate-100 border-t border-slate-200 py-3 text-center text-xs text-slate-500">
+    <p>Zıt Anlamlı Kelimeler Bilgi Yarışması © 2026 | İlkokul 2. Sınıf Türkçe Müfredatına Uygundur.</p>
+  </footer>
 
-        // Ödül / Puan merdiveni değerleri
-        const prizeLadder = [
-            "500 Puan",
-            "250 Puan",
-            "125 Puan",
-            "80 Puan",
-            "50 Puan",
-            "30 Puan",
-            "20 Puan",
-            "15 Puan",
-            "10 Puan",
-            "5 Puan"
-        ];
-    </script>
+  <!-- SCRIPT KODLARI -->
+  <script>
+    // --- PWA KURULUM YÖNETİCİSİ (Bütünleşik PWA Desteği) ---
+    let deferredPrompt;
+    
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Chrome/Android için varsayılan alt çubuğu engelle
+      e.preventDefault();
+      // Tetikleyiciyi sakla
+      deferredPrompt = e;
+      // Özel sevimli yükleme bannerını göster
+      const banner = document.getElementById('pwa-install-banner');
+      if (banner) {
+        banner.classList.remove('hidden');
+        banner.classList.add('flex');
+      }
+    });
 
-    <script>
-        let currentLevel = 1; // 1'den 10'a kadar seviyeler
-        let currentQuestion = null;
-        let selectedQuestions = []; // Seçilen 10 soru (her seviyeden 1 tane)
-        let isHalfUsed = false;
-        let isAudienceUsed = false;
-        let isPhoneUsed = false;
-        let canAnswer = true;
+    function triggerPWAInstall() {
+      if (!deferredPrompt) return;
+      // Kurulum penceresini kullanıcıya göster
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('Kullanıcı uygulamayı yüklemeyi kabul etti.');
+        }
+        // Banner'ı gizle
+        const banner = document.getElementById('pwa-install-banner');
+        if (banner) banner.classList.add('hidden');
+        deferredPrompt = null;
+      });
+    }
 
-        // Sayfa yüklendiğinde skoru al ve oyunu başlat
-        window.onload = function() {
-            const savedHighScore = localStorage.getItem("zit_anlam_highscore") || 0;
-            document.getElementById("high-score").innerText = savedHighScore;
-            
-            generateLadder();
-            setupGame();
-        };
+    // --- SES EFEKTLERİ İÇİN WEB AUDIO API SENTEZLEYİCİ ---
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-        // Ödül merdivenini dinamik çiz
-        function generateLadder() {
-            const container = document.getElementById("money-ladder-container");
-            container.innerHTML = "";
-            
-            // 10'dan 1'e doğru ters sıra ile çizelim (böylece 500 puan en üstte olur)
-            for (let i = 10; i >= 1; i--) {
-                const div = document.createElement("div");
-                div.id = `ladder-step-${i}`;
-                div.className = "ladder-item flex items-center justify-between px-4 py-2 text-sm font-extrabold transition-all duration-300";
-                
-                // Baraj sorusu vurgusu (2. ve 5. sorular baraj)
-                let prefix = "";
-                let bgClass = "bg-purple-950/80 border border-purple-500/20 text-gray-400";
-                
-                if (i === 2 || i === 5 || i === 10) {
-                    prefix = "⭐ ";
-                }
-                
-                div.className = `ladder-item flex items-center justify-between px-4 py-2 text-xs sm:text-sm font-extrabold transition-all duration-300 ${bgClass}`;
-                div.innerHTML = `
-                    <span>${prefix}${i}. Soru</span>
-                    <span class="text-amber-400">${prizeLadder[10 - i]}</span>
-                `;
-                container.appendChild(div);
-            }
+    function playSound(type) {
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      
+      const osc = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      osc.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+
+      if (type === 'click') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.1);
+        gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.1);
+      } else if (type === 'correct') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+        osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+        osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2); // G5
+        gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.4);
+      } else if (type === 'wrong') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+        osc.frequency.linearRampToValueAtTime(80, audioCtx.currentTime + 0.5);
+        gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.5);
+      } else if (type === 'joker') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(900, audioCtx.currentTime + 0.3);
+        gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.3);
+      }
+    }
+
+    // --- 50 TANE 2. SINIF SEVİYESİ ZIT ANLAMLI KELİME VERİTABANI ---
+    const zitAnlamlilar = {
+      1: [
+        { word: "Sıcak", answer: "Soğuk", distractors: ["Ilık", "Islak", "Kuru"], sentence: "Fırından yeni çıkan sıcak ekmeğin yanına soğuk bir ayran çok iyi gitti." },
+        { word: "Büyük", answer: "Küçük", distractors: ["Geniş", "Uzun", "Yüksek"], sentence: "Büyük fil ile küçük karınca ormanda yan yana yürüyordu." },
+        { word: "Yeni", answer: "Eski", distractors: ["Yırtık", "Güzel", "Temiz"], sentence: "Yeni ayakkabılarımı giyince eski ayakkabılarımı dolaba kaldırdım." },
+        { word: "Uzun", answer: "Kısa", distractors: ["Uzak", "Geniş", "Alçak"], sentence: "Uzun boylu zürafa, kısa boylu çitin üzerinden kolayca baktı." },
+        { word: "Yukarı", answer: "Aşağı", distractors: ["İçeri", "Dışarı", "Uzak"], sentence: "Yukarı çıkan balon patlayınca aşağı doğru süzülerek indi." }
+      ],
+      2: [
+        { word: "İçeri", answer: "Dışarı", distractors: ["Yukarı", "Aşağı", "Uzak"], sentence: "Hava soğuyunca içeri girdik, güneş açınca tekrar dışarı çıktık." },
+        { word: "Açık", answer: "Kapalı", distractors: ["Karanlık", "Dar", "Kilitli"], sentence: "Açık olan pencereyi üşümemek için hemen kapalı hale getirdim." },
+        { word: "Var", answer: "Yok", distractors: ["Az", "Çok", "Bitik"], sentence: "Sepette elma var ama armut hiç yok." },
+        { word: "Evli", answer: "Bekar", distractors: ["Çocuklu", "Yalnız", "Yaşlı"], sentence: "Dayım evli iken teyzem henüz bekar bir öğrencidir." },
+        { word: "Genç", answer: "Yaşlı", distractors: ["Çocuk", "Bebek", "Zayıf"], sentence: "Genç sporcu, yaşlı dedenin poşetlerini taşımasına yardım etti." }
+      ],
+      3: [
+        { word: "Hızlı", answer: "Yavaş", distractors: ["Çabuk", "Ağır", "Durgun"], sentence: "Hızlı koşan tavşan, yavaş yürüyen kaplumbağaya yenildi." },
+        { word: "Zengin", answer: "Fakir", distractors: ["Paralı", "Güçsüz", "Mutsuz"], sentence: "Zengin adam yardıma muhtaç olan fakir ailelere destek oldu." },
+        { word: "Temiz", answer: "Kirli", distractors: ["Paslı", "Yırtık", "Eski"], sentence: "Temiz elleriyle kirli topu tutunca hemen banyoya koştu." },
+        { word: "Ön", answer: "Arka", distractors: ["Yan", "Üst", "Alt"], sentence: "Arabanın ön koltuğunda babam, arka koltuğunda ise ben oturuyorum." },
+        { word: "Zayıf", answer: "Şişman", distractors: ["Uzun", "Güçsüz", "İnce"], sentence: "Zayıf kedi, şişman köpeğin arkasından hızlıca kaçtı." }
+      ],
+      4: [
+        { word: "Gündüz", answer: "Gece", distractors: ["Akşam", "Sabah", "Karanlık"], sentence: "Gündüz güneş parıldarken, gece gökyüzünde yıldızlar ışıldar." },
+        { word: "Acı", answer: "Tatlı", distractors: ["Sıcak", "Ekşi", "Tuzlu"], sentence: "Acı biberi yedikten sonra ağzını tatlı çikolata ile tatlandırdı." },
+        { word: "Yumuşak", answer: "Sert", distractors: ["Islak", "Düz", "Katı"], sentence: "Yumuşak yastığını bırakıp sert zeminde yatmak istemedi." },
+        { word: "Uzak", answer: "Yakın", distractors: ["Derin", "Dar", "Geniş"], sentence: "Okulumuz evimize çok yakın ama hastane oldukça uzak." },
+        { word: "İlk", answer: "Son", distractors: ["Orta", "Yeni", "Geçmiş"], sentence: "Yarışın ilk turunda çok hızlıydı ama son turda yoruldu." }
+      ],
+      5: [
+        { word: "Ağır", answer: "Hafif", distractors: ["Küçük", "Yavaş", "Yumuşak"], sentence: "Ağır taşları babam kaldırdı, hafif yaprakları ise ben topladım." },
+        { word: "Islak", answer: "Kuru", distractors: ["Nemli", "Soğuk", "Temiz"], sentence: "Islak saçlarını kurutma makinesiyle tamamen kuru hale getirdi." },
+        { word: "Dolu", answer: "Boş", distractors: ["Yarım", "Eksik", "Az"], sentence: "Dolu bardaktaki suyu içince bardak tamamen boş kaldı." },
+        { word: "Doğru", answer: "Yanlış", distractors: ["Düz", "Eğri", "Eksik"], sentence: "Sınavdaki tüm soruları doğru cevaplayıp hiç yanlış yapmadı." },
+        { word: "Sağ", answer: "Sol", distractors: ["Ön", "Arka", "Yukarı"], sentence: "Karşıya geçerken önce sola, sonra sağa bakmalıyız." }
+      ],
+      6: [
+        { word: "Zor", answer: "Kolay", distractors: ["Basit", "Rahat", "Güzel"], sentence: "Matematikteki zor soruyu çözünce diğer kolay soruları hemen bitirdi." },
+        { word: "Giriş", answer: "Çıkış", distractors: ["Kapı", "Pencere", "Ön taraf"], sentence: "Alışveriş merkezinin giriş kapısından girip çıkış kapısından ayrıldık." },
+        { word: "Cesur", answer: "Korkak", distractors: ["Güçsüz", "Zayıf", "Heyecanlı"], sentence: "Cesur aslan kükreyince korkak tavşan çalının arkasına saklandı." },
+        { word: "Tatlı", answer: "Acı", distractors: ["Ekşi", "Tuzlu", "Sıcak"], sentence: "Yediğim tatlı elmanın ardından acı bibere denk gelmek şaşırttı." },
+        { word: "Alçak", answer: "Yüksek", distractors: ["Uzun", "Geniş", "Derin"], sentence: "Alçak tepeden uçan kuş, aniden yüksek dağlara doğru süzüldü." }
+      ],
+      7: [
+        { word: "Usta", answer: "Acemi", distractors: ["Çırak", "Öğrenci", "Yavaş"], sentence: "Usta şoför arabayı çok rahat sürerken acemi sürücü zorlanıyordu." },
+        { word: "Kuru", answer: "Yaş", distractors: ["Nemli", "Soğuk", "Eski"], sentence: "Kuru odunları yakmak kolaydır ama yaş odunlar hemen yanmaz." },
+        { word: "Savaş", answer: "Barış", distractors: ["Dostluk", "Kavga", "Sevgi"], sentence: "İnsanlar savaş yerine her zaman barış içinde yaşamalıdır." },
+        { word: "Sık", answer: "Seyrek", distractors: ["Az", "Çok", "Dağınık"], sentence: "Sık ormanda yürürken birden ağaçların seyrek olduğu bir alana ulaştık." },
+        { word: "Derin", answer: "Sığ", distractors: ["Alçak", "Düz", "Kısa"], sentence: "Havuzun derin kısmında yüzemediğim için sığ yerinde oynadım." }
+      ],
+      8: [
+        { word: "Kâr", answer: "Zarar", distractors: ["Borç", "Kayıp", "Alacak"], sentence: "Esnaf bu satıştan kâr edeceğini düşünürken maalesef zarar etti." },
+        { word: "Doğu", answer: "Batı", distractors: ["Kuzey", "Güney", "Sağ"], sentence: "Güneş doğu yönünden yükselir, akşam batı yönünden batar." },
+        { word: "Cömert", answer: "Cimri", distractors: ["Fakir", "Zengin", "Kötü"], sentence: "Cömert çocuk boyalarını paylaşırken, cimri olan kimseye vermedi." },
+        { word: "Çift", answer: "Tek", distractors: ["Yarım", "Bütün", "Çoklu"], sentence: "Ayakkabılarımız her zaman çift olur ama burnumuz tek bir tanedir." },
+        { word: "Dost", answer: "Düşman", distractors: ["Arkadaş", "Yabancı", "Tanıdık"], sentence: "İyi günde dost olanlar, kötü günde düşman gibi davranmaz." }
+      ],
+      9: [
+        { word: "Çukur", answer: "Tümsek", distractors: ["Tepe", "Düzlük", "Yol"], sentence: "Bisikletimle çukurdan kaçmaya çalışırken tümseğe çarpıp sarsıldım." },
+        { word: "İnce", answer: "Kalın", distractors: ["Geniş", "Uzun", "Ağır"], sentence: "İnce hırkasını çıkarıp soğuk hava için kalın montunu giydi." },
+        { word: "Tembel", answer: "Çalışkan", distractors: ["Zeki", "Hızlı", "Uykucu"], sentence: "Tembel karınca kışın aç kalırken, çalışkan karınca yiyecek doluydu." },
+        { word: "Aynı", answer: "Farklı", distractors: ["Benzer", "İkiz", "Eşit"], sentence: "İkiz kardeşler aynı elbiseyi giymişti ama ayakkabıları farklıydı." },
+        { word: "Sakin", answer: "Öfkeli", distractors: ["Hızlı", "Yorgun", "Üzgün"], sentence: "Sakin kalan çocuk, öfkeli arkadaşını yatıştırmayı başardı." }
+      ],
+      10: [
+        { word: "Bayat", answer: "Taze", distractors: ["Yeni", "Sıcak", "Yumuşak"], sentence: "Bayat ekmekleri kuşlara verdik, kahvaltıda taze ekmek yedik." },
+        { word: "Ucuza", answer: "Pahalı", distractors: ["Bedava", "Yüksek", "Değerli"], sentence: "Pazardan ucuza aldığımız elmalar markette çok pahalı satılıyordu." },
+        { word: "Geniş", answer: "Dar", distractors: ["Uzun", "Küçük", "Alçak"], sentence: "Geniş caddeden çıktıktan sonra arabamız dar bir sokağa girdi." },
+        { word: "Kuzey", answer: "Güney", distractors: ["Doğu", "Batı", "Yukarı"], sentence: "Pusulanın kırmızı ucu kuzey yönünü gösterirken arkası güneyi gösterir." },
+        { word: "Aç", answer: "Tok", distractors: ["Şişman", "Dolu", "Susuz"], sentence: "Aç olan minik kedi karnını doyurunca çok tok bir şekilde uyudu." }
+      ]
+    };
+
+    // --- ÖDÜL MERDİVENİ ---
+    const dereceler = [
+      { step: 1, prize: "50 Puan" },
+      { step: 2, prize: "100 Puan" },
+      { step: 3, prize: "150 Puan" },
+      { step: 4, prize: "200 Puan" },
+      { step: 5, prize: "250 Puan (Baraj)" },
+      { step: 6, prize: "300 Puan" },
+      { step: 7, prize: "350 Puan" },
+      { step: 8, prize: "400 Puan" },
+      { step: 9, prize: "450 Puan" },
+      { step: 10, prize: "500 Puan 🏆" }
+    ];
+
+    // --- OYUN DURUMU (STATE) ---
+    let currentStep = 1; 
+    let currentQuestionData = null;
+    let selectedQuestions = []; 
+    let jokers = {
+      half: true,
+      phone: true,
+      audience: true
+    };
+
+    // --- YARI YARIYA ELENECEK YANLIŞ ŞIKLAR ---
+    let hiddenOptions = [];
+
+    // --- SAYFA YÜKLENDİĞİNDE YAPILACAKLAR ---
+    window.onload = function() {
+      renderSteps();
+    };
+
+    // --- DERECE BASAMAKLARINI SAĞ PANALE EKLEME ---
+    function renderSteps() {
+      const container = document.getElementById("steps-container");
+      container.innerHTML = "";
+
+      dereceler.forEach((d) => {
+        const isCurrent = d.step === currentStep;
+        const isPassed = d.step < currentStep;
+        
+        let bgClass = "bg-slate-800 text-slate-400 border-slate-700";
+        if (isCurrent) {
+          bgClass = "bg-amber-400 text-slate-900 border-amber-300 font-extrabold scale-105 shadow-lg shadow-amber-500/20";
+        } else if (isPassed) {
+          bgClass = "bg-emerald-600/50 text-emerald-200 border-emerald-500/30";
         }
 
-        // Oyun hazırlama
-        function setupGame() {
-            currentLevel = 1;
-            selectedQuestions = [];
-            isHalfUsed = false;
-            isAudienceUsed = false;
-            isPhoneUsed = false;
-            canAnswer = true;
+        const stepEl = document.createElement("div");
+        stepEl.className = `flex items-center justify-between px-3 py-2 rounded-xl border-2 ${bgClass} transition-all duration-300 text-sm md:text-base`;
+        
+        const barajText = d.step === 5 ? " <span class='text-[10px] bg-red-500 text-white px-1.5 py-0.5 rounded-full ml-1 font-bold uppercase'>Baraj</span>" : "";
 
-            // Joker butonlarını resetle
-            document.getElementById("used-half").classList.add("hidden");
-            document.getElementById("used-audience").classList.add("hidden");
-            document.getElementById("used-phone").classList.add("hidden");
-            
-            document.getElementById("joker-half").disabled = false;
-            document.getElementById("joker-audience").disabled = false;
-            document.getElementById("joker-phone").disabled = false;
+        stepEl.innerHTML = `
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-black/20 flex items-center justify-center font-mono text-xs">${d.step}</span>
+            <span class="font-bold">Aşama${barajText}</span>
+          </div>
+          <span class="font-bold tracking-wider">${d.prize}</span>
+        `;
+        container.appendChild(stepEl);
+      });
+    }
 
-            document.getElementById("joker-half").style.opacity = "1";
-            document.getElementById("joker-audience").style.opacity = "1";
-            document.getElementById("joker-phone").style.opacity = "1";
+    // --- OYUNU BAŞLATMA ---
+    function startGame() {
+      playSound('click');
+      currentStep = 1;
+      jokers = { half: true, phone: true, audience: true };
+      
+      resetJokerButtonStyles();
 
-            // Her seviyeden rastgele 1 soru seç
-            for (let lvl = 1; lvl <= 10; lvl++) {
-                const subPool = pool[lvl];
-                const randomIdx = Math.floor(Math.random() * subPool.length);
-                selectedQuestions.push(subPool[randomIdx]);
-            }
+      selectedQuestions = [];
+      for (let i = 1; i <= 10; i++) {
+        const pool = zitAnlamlilar[i];
+        const randomQ = pool[Math.floor(Math.random() * pool.length)];
+        selectedQuestions.push(randomQ);
+      }
 
+      document.getElementById("start-screen").classList.add("hidden");
+      document.getElementById("win-screen").classList.add("hidden");
+      document.getElementById("game-panel").classList.remove("hidden");
+      document.getElementById("game-panel").classList.add("flex");
+
+      loadQuestion();
+    }
+
+    // --- YENİ SORU YÜKLEME ---
+    function loadQuestion() {
+      hiddenOptions = [];
+      currentQuestionData = selectedQuestions[currentStep - 1];
+
+      const currentPrizeText = currentStep === 1 ? "0 Puan" : dereceler[currentStep - 2].prize;
+      document.getElementById("current-prize-badge").innerText = currentPrizeText;
+
+      document.getElementById("question-index-label").innerText = `Soru: ${currentStep}/10`;
+      
+      let difficultyText = "Kolay";
+      let difficultyColor = "bg-emerald-100 text-emerald-700";
+      if (currentStep > 4 && currentStep <= 7) {
+        difficultyText = "Orta";
+        difficultyColor = "bg-amber-100 text-amber-700";
+      } else if (currentStep > 7) {
+        difficultyText = "Zor 🧠";
+        difficultyColor = "bg-rose-100 text-rose-700";
+      }
+      const diffLabel = document.getElementById("question-difficulty-label");
+      diffLabel.innerText = `Zorluk: ${difficultyText}`;
+      diffLabel.className = `${difficultyColor} px-3 py-1 rounded-full text-xs font-bold`;
+
+      document.getElementById("question-word").innerText = currentQuestionData.word;
+
+      const options = [currentQuestionData.answer, ...currentQuestionData.distractors];
+      shuffleArray(options);
+
+      const container = document.getElementById("answers-container");
+      container.innerHTML = "";
+
+      const letters = ["A", "B", "C", "D"];
+      options.forEach((opt, idx) => {
+        const btn = document.createElement("button");
+        btn.id = `opt-${idx}`;
+        btn.onclick = () => checkAnswer(opt, idx);
+        btn.className = "bg-white hover:bg-purple-50 text-slate-700 border-4 border-purple-200 hover:border-purple-400 p-4 rounded-2xl flex items-center gap-3 text-left font-bold text-base md:text-lg bubble-button bubble-shadow transition-all duration-100";
+        btn.innerHTML = `
+          <span class="w-8 h-8 rounded-lg bg-purple-100 text-purple-700 flex items-center justify-center font-bold font-mono shadow-inner">${letters[idx]}</span>
+          <span class="option-text">${opt}</span>
+        `;
+        container.appendChild(btn);
+      });
+
+      renderSteps();
+    }
+
+    // --- CEVAP KONTROLÜ ---
+    function checkAnswer(selectedOpt, btnIdx) {
+      const correct = currentQuestionData.answer;
+      const buttons = document.querySelectorAll("#answers-container button");
+
+      buttons.forEach(btn => btn.disabled = true);
+
+      if (selectedOpt === correct) {
+        playSound('correct');
+        const clickedBtn = document.getElementById(`opt-${btnIdx}`);
+        clickedBtn.classList.remove("border-purple-200", "hover:border-purple-400", "bg-white");
+        clickedBtn.classList.add("bg-emerald-500", "text-white", "border-emerald-400");
+        
+        setTimeout(() => {
+          if (currentStep < 10) {
+            currentStep++;
             loadQuestion();
+          } else {
+            showWinScreen();
+          }
+        }, 1200);
+
+      } else {
+        playSound('wrong');
+        const clickedBtn = document.getElementById(`opt-${btnIdx}`);
+        if (clickedBtn) {
+          clickedBtn.classList.remove("border-purple-200", "bg-white");
+          clickedBtn.classList.add("bg-rose-500", "text-white", "border-rose-400");
         }
 
-        // Soru yükleme fonksiyonu
-        function loadQuestion() {
-            canAnswer = true;
-            currentQuestion = selectedQuestions[currentLevel - 1];
-            
-            // Arayüz güncellemeleri
-            document.getElementById("question-level-title").innerHTML = `<i class="fa-solid fa-star mr-2 text-yellow-400"></i>Soru: ${currentLevel} / 10`;
-            document.getElementById("question-points").innerText = `Ödül: ${prizeLadder[10 - currentLevel]}`;
-            document.getElementById("question-text").innerText = `"${currentQuestion.word}" kelimesinin zıt anlamlısı nedir?`;
+        buttons.forEach((btn, idx) => {
+          const optText = btn.querySelector(".option-text").innerText;
+          if (optText === correct) {
+            btn.classList.remove("border-purple-200", "bg-white");
+            btn.classList.add("bg-emerald-500", "text-white", "border-emerald-400");
+          }
+        });
 
-            // Şıkları yerleştirme ve resetleme
-            const letters = ["A", "B", "C", "D"];
-            letters.forEach((letter, index) => {
-                const btn = document.getElementById(`opt-${letter}`);
-                const span = document.getElementById(`text-${letter}`);
-                
-                span.innerText = currentQuestion.options[index];
-                btn.className = "option-btn text-left p-4 sm:p-5 text-base sm:text-lg font-bold text-gray-200 flex items-center gap-3 w-full";
-                btn.disabled = false;
-                btn.style.opacity = "1";
-            });
+        setTimeout(() => {
+          showLearningModal();
+        }, 1500);
+      }
+    }
 
-            // Merdivendeki aktif seviyeyi güncelle
-            for (let i = 1; i <= 10; i++) {
-                const step = document.getElementById(`ladder-step-${i}`);
-                if (step) {
-                    if (i === currentLevel) {
-                        step.className = "ladder-item flex items-center justify-between px-4 py-2 text-xs sm:text-sm font-extrabold transition-all duration-300 bg-amber-500 text-purple-950 scale-105 shadow-xl border-l-4 border-white rounded-lg";
-                    } else if (i < currentLevel) {
-                        step.className = "ladder-item flex items-center justify-between px-4 py-2 text-xs sm:text-sm font-extrabold transition-all duration-300 bg-emerald-600/50 text-emerald-200 line-through rounded";
-                    } else {
-                        step.className = "ladder-item flex items-center justify-between px-4 py-2 text-xs sm:text-sm font-extrabold transition-all duration-300 bg-purple-950/80 border border-purple-500/20 text-gray-400 rounded";
-                    }
-                }
-            }
+    // --- EĞİTİCİ MODAL GÖSTERİMİ ---
+    function showLearningModal() {
+      document.getElementById("modal-word-q").innerText = currentQuestionData.word;
+      document.getElementById("modal-word-a").innerText = currentQuestionData.answer;
+      document.getElementById("modal-sentence").innerHTML = `"${currentQuestionData.sentence.replace(
+        new RegExp(currentQuestionData.word, 'gi'), `<b>${currentQuestionData.word}</b>`
+      ).replace(
+        new RegExp(currentQuestionData.answer, 'gi'), `<b>${currentQuestionData.answer}</b>`
+      )}"`;
+
+      document.getElementById("learning-modal").classList.remove("hidden");
+    }
+
+    // --- EĞİTİCİ MODAL KAPATMA ---
+    function closeLearningModal() {
+      playSound('click');
+      document.getElementById("learning-modal").classList.add("hidden");
+      currentStep = 1;
+      startGame();
+    }
+
+    // --- KAZANMA BİTİŞ EKRANI GÖSTERİMİ ---
+    function showWinScreen() {
+      document.getElementById("current-prize-badge").innerText = "500 Puan 🏆";
+      document.getElementById("game-panel").classList.add("hidden");
+      document.getElementById("game-panel").classList.remove("flex");
+      document.getElementById("win-screen").classList.remove("hidden");
+
+      confetti({
+        particleCount: 150,
+        spread: 80,
+        origin: { y: 0.6 }
+      });
+    }
+
+    function restartGame() {
+      playSound('click');
+      startGame();
+    }
+
+    // --- JOKER: %50 YARI YARIYA ---
+    function useHalfJoker() {
+      if (!jokers.half) return;
+      playSound('joker');
+      jokers.half = false;
+      document.getElementById("joker-half").classList.add("opacity-40", "cursor-not-allowed");
+      document.getElementById("joker-half").disabled = true;
+
+      const correct = currentQuestionData.answer;
+      const buttons = document.querySelectorAll("#answers-container button");
+      
+      let incorrectIndices = [];
+      buttons.forEach((btn, idx) => {
+        const text = btn.querySelector(".option-text").innerText;
+        if (text !== correct) {
+          incorrectIndices.push(idx);
+        }
+      });
+
+      shuffleArray(incorrectIndices);
+      const toRemove = incorrectIndices.slice(0, 2);
+
+      toRemove.forEach(idx => {
+        const btn = document.getElementById(`opt-${idx}`);
+        if (btn) {
+          btn.style.visibility = "hidden";
+          hiddenOptions.push(idx);
+        }
+      });
+    }
+
+    // --- JOKER: TELEFON JOKERİ ---
+    function usePhoneJoker() {
+      if (!jokers.phone) return;
+      playSound('joker');
+      jokers.phone = false;
+      document.getElementById("joker-phone").classList.add("opacity-40", "cursor-not-allowed");
+      document.getElementById("joker-phone").disabled = true;
+
+      const correct = currentQuestionData.answer;
+      const teacherTips = [
+        `Merhaba akıllı dedektif! Bence bu kelimenin zıt anlamlısı kesinlikle <b>"${correct}"</b> olmalı. Kendine güven!`,
+        `Düşündüm de, Türkçe dersimizde bu konuyu işlemiştik. Kelimenin karşıtı olan zıt anlamlısı <b>"${correct}"</b> seçeneğidir.`,
+        `Harika gidiyorsun! Aradığın doğru cevap kulağıma fısıldandı: <b>"${correct}"</b> şıkkını güvenle işaretleyebilirsin.`
+      ];
+      const tip = teacherTips[Math.floor(Math.random() * teacherTips.length)];
+
+      showJokerModal("📞", "Bilge Öğretmen Aranıyor...", tip);
+    }
+
+    // --- JOKER: SEYİRCİ JOKERİ ---
+    function useAudienceJoker() {
+      if (!jokers.audience) return;
+      playSound('joker');
+      jokers.audience = false;
+      document.getElementById("joker-audience").classList.add("opacity-40", "cursor-not-allowed");
+      document.getElementById("joker-audience").disabled = true;
+
+      const correct = currentQuestionData.answer;
+      const buttons = document.querySelectorAll("#answers-container button");
+
+      let total = 100;
+      const correctPercent = Math.floor(Math.random() * 13) + 75; 
+      const remaining = total - correctPercent;
+
+      let numActiveDistractors = 3 - hiddenOptions.length;
+      let distOylari = [];
+      
+      if (numActiveDistractors === 1) {
+        distOylari = [remaining];
+      } else {
+        const split = Math.floor(Math.random() * remaining);
+        distOylari = [split, remaining - split];
+      }
+
+      let distIdx = 0;
+      let barsHtml = `<div class="flex flex-col gap-2 mt-2">`;
+
+      buttons.forEach((btn, idx) => {
+        if (hiddenOptions.includes(idx)) return;
+
+        const text = btn.querySelector(".option-text").innerText;
+        const letter = btn.querySelector("span").innerText;
+        let percent = 0;
+
+        if (text === correct) {
+          percent = correctPercent;
+        } else {
+          percent = distOylari[distIdx] || 0;
+          distIdx++;
         }
 
-        function checkAnswer(chosenLetter) {
-            if (!canAnswer) return;
-            canAnswer = false;
+        barsHtml += `
+          <div class="flex items-center gap-2 text-sm">
+            <span class="font-bold w-4">${letter}:</span>
+            <div class="flex-grow bg-slate-100 h-6 rounded-lg overflow-hidden border">
+              <div class="bg-amber-400 h-full rounded-r-lg" style="width: ${percent}%"></div>
+            </div>
+            <span class="font-bold text-xs w-8 text-right">%${percent}</span>
+          </div>
+        `;
+      });
 
-            const selectedBtn = document.getElementById(`opt-${chosenLetter}`);
-            selectedBtn.classList.add("selected");
-            playSound('click');
+      barsHtml += `</div><p class="text-xs text-slate-500 mt-3 italic">Sınıf arkadaşlarının büyük çoğunluğu doğru yönü gösteriyor!</p>`;
 
-            // Gerilim süresi efekti (Yarım saniye sonra göster)
-            setTimeout(() => {
-                const chosenText = document.getElementById(`text-${chosenLetter}`).innerText;
-                const isCorrect = (chosenText === currentQuestion.correct);
+      showJokerModal("📊", "Sınıf Oylama Sonuçları", barsHtml);
+    }
 
-                if (isCorrect) {
-                    // Doğru Cevap
-                    selectedBtn.classList.remove("selected");
-                    selectedBtn.classList.add("correct");
-                    playSound('correct');
+    function showJokerModal(icon, title, content) {
+      document.getElementById("joker-modal-icon").innerText = icon;
+      document.getElementById("joker-modal-title").innerText = title;
+      document.getElementById("joker-modal-content").innerHTML = content;
+      document.getElementById("joker-modal").classList.remove("hidden");
+    }
 
-                    // Küçük konfeti patlatması (Soru geçişinde eğlence)
-                    confetti({
-                        particleCount: 40,
-                        spread: 60,
-                        origin: { y: 0.8 }
-                    });
+    function closeJokerModal() {
+      playSound('click');
+      document.getElementById("joker-modal").classList.add("hidden");
+    }
 
-                    // 1.5 saniye sonra bir sonraki seviyeye geç
-                    setTimeout(() => {
-                        if (currentLevel === 10) {
-                            // Oyunu Kazandı!
-                            showWinModal();
-                        } else {
-                            currentLevel++;
-                            loadQuestion();
-                        }
-                    }, 1500);
+    function resetJokerButtonStyles() {
+      const jokersList = [
+        { id: "joker-half", bg: "bg-blue-100", border: "border-blue-300", text: "text-blue-800" },
+        { id: "joker-phone", bg: "bg-pink-100", border: "border-pink-300", text: "text-pink-800" },
+        { id: "joker-audience", bg: "bg-amber-100", border: "border-amber-300", text: "text-amber-800" }
+      ];
 
-                } else {
-                    // Yanlış Cevap
-                    selectedBtn.classList.remove("selected");
-                    selectedBtn.classList.add("wrong");
-                    
-                    // Doğru cevabı yeşille göster
-                    const letters = ["A", "B", "C", "D"];
-                    letters.forEach(letter => {
-                        const optText = document.getElementById(`text-${letter}`).innerText;
-                        if (optText === currentQuestion.correct) {
-                            document.getElementById(`opt-${letter}`).classList.add("correct");
-                        }
-                    });
-                    
-                    playSound('wrong');
+      jokersList.forEach(j => {
+        const btn = document.getElementById(j.id);
+        btn.disabled = false;
+        btn.className = `${j.bg} hover:bg-opacity-80 ${j.text} font-bold py-3 px-2 rounded-xl border-2 ${j.border} transition flex flex-col items-center justify-center gap-1`;
+      });
+    }
 
-                    // 1.5 saniye sonra eğitici pencereyi aç
-                    setTimeout(() => {
-                        showWrongModal();
-                    }, 1500);
-                }
-            }, 800);
-        }
-
-        
-        // %50 Yarı Yarıya Jokeri
-        function useHalfJoker() {
-            if (isHalfUsed || !canAnswer) return;
-            isHalfUsed = true;
-            playSound('joker');
-            
-            document.getElementById("used-half").classList.remove("hidden");
-            document.getElementById("joker-half").disabled = true;
-            document.getElementById("joker-half").style.opacity = "0.4";
-
-            // Doğru şık dışındaki şıkları bulup 2 tanesini ele
-            const letters = ["A", "B", "C", "D"];
-            let incorrectIndices = [];
-            
-            letters.forEach((letter, index) => {
-                const text = document.getElementById(`text-${letter}`).innerText;
-                if (text !== currentQuestion.correct) {
-                    incorrectIndices.push(index);
-                }
-            });
-
-            // Rastgele 2 tanesini silmek üzere karıştır
-            incorrectIndices.sort(() => Math.random() - 0.5);
-            
-            // İlk iki sıradakini devre dışı bırak
-            for (let i = 0; i < 2; i++) {
-                const letterToDisable = letters[incorrectIndices[i]];
-                const btn = document.getElementById(`opt-${letterToDisable}`);
-                btn.style.opacity = "0.2";
-                btn.disabled = true;
-            }
-        }
-
-        // Seyirci Jokeri
-        function useAudienceJoker() {
-            if (isAudienceUsed || !canAnswer) return;
-            isAudienceUsed = true;
-            playSound('joker');
-
-            document.getElementById("used-audience").classList.remove("hidden");
-            document.getElementById("joker-audience").disabled = true;
-            document.getElementById("joker-audience").style.opacity = "0.4";
-
-            // Doğru cevaba en yüksek yüzeyi verelim (çocuklar için kolaylaştırılmış)
-            const letters = ["A", "B", "C", "D"];
-            let correctIndex = -1;
-
-            letters.forEach((letter, index) => {
-                if (document.getElementById(`text-${letter}`).innerText === currentQuestion.correct) {
-                    correctIndex = index;
-                }
-            });
-
-            let votes = [0, 0, 0, 0];
-            // Doğru şıkka %70 ile %85 arası büyük bir oy ver
-            const correctPercent = Math.floor(Math.random() * 15) + 70;
-            votes[correctIndex] = correctPercent;
-
-            // Kalan yüzdeyi diğerlerine dağıt
-            let remaining = 100 - correctPercent;
-            for (let i = 0; i < 4; i++) {
-                if (i !== correctIndex) {
-                    if (remaining > 0) {
-                        const share = Math.floor(Math.random() * (remaining + 1));
-                        votes[i] = share;
-                        remaining -= share;
-                    }
-                }
-            }
-            // Artan olursa birine ekle
-            if (remaining > 0) {
-                for (let i = 0; i < 4; i++) {
-                    if (i !== correctIndex) {
-                        votes[i] += remaining;
-                        break;
-                    }
-                }
-            }
-
-            // Grafik modalını doldur ve göster
-            letters.forEach((letter, idx) => {
-                document.getElementById(`vote-val-${letter}`).innerText = `%${votes[idx]}`;
-                document.getElementById(`vote-bar-${letter}`).style.height = `${votes[idx]}%`;
-            });
-
-            document.getElementById("modal-audience").classList.remove("hidden");
-        }
-
-        // Telefon Jokeri
-        function usePhoneJoker() {
-            if (isPhoneUsed || !canAnswer) return;
-            isPhoneUsed = true;
-            playSound('joker');
-
-            document.getElementById("used-phone").classList.remove("hidden");
-            document.getElementById("joker-phone").disabled = true;
-            document.getElementById("joker-phone").style.opacity = "0.4";
-
-            // Öğretmenin tatlı cevabını hazırla
-            const answer = currentQuestion.correct;
-            const teachersName = "Bilge Öğretmen";
-            const message = `"Merhaba tatlım! Sorunu çok beğendim. 2. sınıfta bunu öğrenmiştik hatırlarsın. <strong>${currentQuestion.word}</strong> kelimesinin zıt anlamlısı bence kesinlikle <strong>${answer}</strong>. Hadi hemen işaretle ve kazan!"`;
-            
-            document.getElementById("phone-dialog").innerHTML = message;
-            document.getElementById("modal-phone").classList.remove("hidden");
-        }
-
-        // Modal kapatma
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.add("hidden");
-        }
-
-        
-        // Yanlış cevap modalı tetikleme (Öğretici Ekran)
-        function showWrongModal() {
-            document.getElementById("wrong-word-title").innerText = `${currentQuestion.word} & ${currentQuestion.correct}`;
-            document.getElementById("wrong-word-asked").innerText = currentQuestion.word;
-            document.getElementById("wrong-word-correct").innerText = currentQuestion.correct;
-            document.getElementById("wrong-word-sentence").innerText = `"${currentQuestion.sentence}"`;
-
-            document.getElementById("modal-wrong").classList.remove("hidden");
-        }
-
-        // Kazanma Modalı tetikleme
-        function showWinModal() {
-            // Skoru kaydet
-            updateHighScore(500);
-
-            // Havai fişek konfeti efekti
-            const duration = 5 * 1000;
-            const animationEnd = Date.now() + duration;
-            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
-
-            function randomInRange(min, max) {
-                return Math.random() * (max - min) + min;
-            }
-
-            const interval = setInterval(function() {
-                const timeLeft = animationEnd - Date.now();
-
-                if (timeLeft <= 0) {
-                    return clearInterval(interval);
-                }
-
-                const particleCount = 50 * (timeLeft / duration);
-                // Konfeti patlatmaları
-                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
-                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
-            }, 250);
-
-            document.getElementById("modal-win").classList.remove("hidden");
-        }
-
-        // Yüksek Skor Güncelleme
-        function updateHighScore(newPoints) {
-            const currentHigh = parseInt(localStorage.getItem("zit_anlam_highscore") || 0);
-            if (newPoints > currentHigh) {
-                localStorage.setItem("zit_anlam_highscore", newPoints);
-                document.getElementById("high-score").innerText = newPoints;
-            }
-        }
-
-        // Oyunu En Baştan Başlatma
-        function restartGame() {
-            // Eğer baraj puanı varsa (2. veya 5. soru geçildiyse) yüksek skor kaydı yapabiliriz
-            let earnedPoints = 0;
-            if (currentLevel > 5) {
-                earnedPoints = 50; // Baraj puanı
-            } else if (currentLevel > 2) {
-                earnedPoints = 10; // İlk baraj
-            }
-            updateHighScore(earnedPoints);
-
-            closeModal("modal-wrong");
-            closeModal("modal-win");
-            setupGame();
-        }
-    </script>
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+  </script>
 </body>
 </html>
